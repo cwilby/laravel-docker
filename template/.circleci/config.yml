@@ -1,0 +1,54 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: 'lorisleiva/laravel-docker:latest'
+      - image: 'circleci/redis:latest'
+      - image: 'circleci/mysql:5.7.25-ram'
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: no
+          MYSQL_ROOT_PASSWORD: 'secret'
+    steps:
+      - checkout
+      - run:
+          name: 'Setup test environment'
+          command: |
+            cp .env.example .env
+            chmod -R 777 storage && chmod -R 777 public
+            sed -i -e 's/percona/127.0.0.1/g' ./.env
+            sed -i -e 's/percona/127.0.0.1/g' ./.env.testing
+            [ -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ] &&
+              mv /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.off
+            while ! mysqladmin ping -h 127.0.0.1 --silent; do
+                sleep 1
+            done
+            mysql -h 127.0.0.1 -u root -psecret -e "create database {{APP_NAME}}; create database {{APP_NAME}}_testing;"
+      - restore_cache:
+          keys:
+            - {% raw %}'composer-packages-{{ .Branch }}-{{ .Revision }}-'{% endraw %}
+            - {% raw %}'composer-packages-{{ .Branch }}-'{% endraw %}
+      - run: composer install
+      - save_cache:
+          key: {% raw %}'composer-packages-{{ .Branch }}-{{ .Revision }}-'{% endraw %}
+          paths:
+            - ~/.composer/cache
+            - vendor
+      - run:
+          name: 'Build Laravel app'
+          command: |
+            php artisan migrate --env=testing --seed
+      - run:
+          name: 'Run PHPUnit test suite'
+          command: |
+            mkdir -p ~/phpunit
+            ./vendor/bin/phpunit --testdox --log-junit ~/phpunit/junit.xml --testdox-exclude-group slow --exclude-group slow
+          when: always
+      - store_test_results:
+          path: ~/phpunit
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
