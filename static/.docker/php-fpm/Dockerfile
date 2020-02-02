@@ -25,11 +25,14 @@ RUN apk add --update \
   zlib-dev \
   libmcrypt-dev \
   libzip-dev \
+  icu-dev \
   make
 
 RUN docker-php-ext-install pdo_mysql opcache \
   && docker-php-ext-configure zip \
-  && docker-php-ext-install zip
+  && docker-php-ext-install zip \
+  && docker-php-ext-configure intl \
+  && docker-php-ext-install intl
 
 RUN apk update \
     && pecl channel-update pecl.php.net \
