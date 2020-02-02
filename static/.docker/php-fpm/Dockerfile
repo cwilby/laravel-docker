@@ -23,11 +23,11 @@ RUN apk add --update \
   wget \
   g++ \
   zlib-dev \
-  libmcrypt-dev
+  libmcrypt-dev \
+  libzip-dev \
+  make
 
 RUN docker-php-ext-install pdo_mysql opcache \
-  && docker-php-ext-configure intl \
-  && docker-php-ext-install intl \
   && docker-php-ext-configure zip \
   && docker-php-ext-install zip
 
@@ -42,7 +42,7 @@ RUN apk update \
 
 RUN printf "\n" \
   && pecl install mcrypt-1.0.3 \
-  && docker-php-ext-enable imagick mcrypt \
+  && docker-php-ext-enable mcrypt \
   && usermod -u 1000 www-data
 
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini

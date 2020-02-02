@@ -106,7 +106,6 @@ RUN composer global install
 RUN echo "" >> ~/.bashrc && echo 'export PATH="~/.composer/vendor/bin:$PATH"' >> ~/.bashrc
 RUN echo "" >> ~/.bashrc && echo 'export PATH="/var/www/vendor/bin:$PATH"' >> ~/.bashrc
 
-RUN apt-get update -yqq && apt-get -y install mysql-client inetutils-ping
 
 ARG NODE_VERSION=node
 ENV NODE_VERSION node
@@ -135,13 +134,13 @@ RUN chmod -R 644 /etc/cron.d
 
 COPY ./xdebug.ini /etc/php/7.4/cli/conf.d/xdebug.ini
 RUN if [ "${APP_DEBUG}" = "true" ]; then \
-    apt-get install -y php7.4-xdebug && \
+    apt-get update -yqq && apt-get install -y php7.4-xdebug && \
     sed -i 's/^;//g' /etc/php/7.4/cli/conf.d/20-xdebug.ini \
 ; else \
     rm /etc/php/7.4/cli/conf.d/xdebug.ini \
 ; fi
 
-RUN apt-get install -yqq php-redis
+RUN apt-get update -yqq && apt-get install -yqq php-redis mysql-client inetutils-ping
 
 RUN pecl install mongodb && \
     echo "extension=mongodb.so" >> /etc/php/7.4/mods-available/mongodb.ini && \
