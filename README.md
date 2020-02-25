@@ -1,9 +1,19 @@
 # Laravel Docker
 
-This is a minimal Node.js script that uses [commander]() and [inquiry]() to ask setup questions and use [nunjucks]() to generate the files needed to run Laravel on Docker in a local environment.
-
-It's what I use to start new Laravel projects - just posting if anybody finds it useful.
+Create a new Laravel project with minimal Docker config, or extend an existing Laravel project.
 
 ## Usage
 
-`node . init <laravel_directory>`
+To clone the latest version of Laravel then add Docker configuration:
+```bash
+$ yarn start create my-awesome-project
+```
+
+To add Docker configuration to an existing project:
+```bash
+$ yarn start add ./my-awesome-project
+```
+
+## Afterwards
+
+- 

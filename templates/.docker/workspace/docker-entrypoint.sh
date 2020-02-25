@@ -18,6 +18,11 @@ function flushAll() {
   fi
 }
 
+if [ ! -z "${PACKAGIST_URL}" ]; then
+  echo 'setting packagist url'
+  composer config -g repos.packagist composer ${PACKAGIST_URL}
+fi
+
 while ! mysqladmin ping -h"${DB_HOST}" -u"root" -p"${ROOT_PASSWORD}" --silent; do
   sleep 1
 done

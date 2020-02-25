@@ -8,10 +8,13 @@
   },
   "dependencies": {
     "commander": "^4.1.0",
+    "curry": "^1.2.0",
     "dotenv": "^8.2.0",
+    "glob-promise": "^3.4.0",
     "inquirer": "^7.0.4",
     "mkdirp": "^1.0.3",
     "ncp": "^2.0.0",
+    "nodegit": "^0.26.4",
     "nunjucks": "^3.2.0"
   }
 }
