@@ -18,11 +18,11 @@ pushd $2
 
   latest_backup=$(ssh -t {{APP_NAME}}@{{BACKUP_SSH_HOST}} "ls /home/{{APP_NAME}}/backups/sql | sort -t_ | tail -n1") 2>/dev/null
   latest_backup=${latest_backup%?}
-  if [ -f ".docker/percona/docker-entrypoint-initdb.d/$latest_backup" ]; then
+  if [ -f "docker/percona/docker-entrypoint-initdb.d/$latest_backup" ]; then
     echo "-- Backup exists locally, will restore from local copy"
   else
     echo "-- Download latest database backup from archive"
-    scp {{APP_NAME}}@{{BACKUP_SSH_HOST}}:backups/sql/${latest_backup} .docker/percona/docker-entrypoint-initdb.d/${latest_backup}
+    scp {{APP_NAME}}@{{BACKUP_SSH_HOST}}:backups/sql/${latest_backup} docker/percona/docker-entrypoint-initdb.d/${latest_backup}
   fi
 
   echo "-- Restart and rebuild containers"
@@ -40,4 +40,4 @@ popd
 
 echo "Restore finished"
 echo "Run the following command after app is up and running again"
-echo "rm -rf .docker/percona/docker-entrypoint-initdb.d/db-backup-*.sql"
+echo "rm -rf docker/percona/docker-entrypoint-initdb.d/db-backup-*.sql"

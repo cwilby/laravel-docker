@@ -91,7 +91,7 @@ function php_debug() {
 }
 
 function phpunitNoDebug() {
-  php -c ./.docker/workspace/disable-xdebug.ini ./vendor/bin/phpunit --order-by=defects --stop-on-defect --exclude-group slow $1
+  php -c ./docker/workspace/disable-xdebug.ini ./vendor/bin/phpunit --order-by=defects --stop-on-defect --exclude-group slow $1
 }
 alias pu="phpunitNoDebug"
 

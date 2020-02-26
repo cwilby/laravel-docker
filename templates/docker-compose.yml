@@ -12,7 +12,7 @@ services:
   workspace:
     container_name: {{APP_NAME}}-dev-workspace
     build:
-      context: ./.docker/workspace
+      context: ./docker/workspace
       args:
         APP_DEBUG: "${APP_DEBUG}"
     command: "bash /home/root/docker-entrypoint.sh"
@@ -47,10 +47,10 @@ services:
 
   api:
     container_name: {{APP_NAME}}-dev-api
-    build: ./.docker/nginx
+    build: ./docker/nginx
     volumes:
       - .:/var/www:cached
-      - ./.docker/nginx/sites/:/etc/nginx/sites-available
+      - ./docker/nginx/sites/:/etc/nginx/sites-available
     ports:
       - 127.0.0.1:8000:80
     depends_on:
@@ -62,13 +62,13 @@ services:
   php-fpm:
     container_name: {{APP_NAME}}-dev-php-fpm
     build:
-      context: ./.docker/php-fpm
+      context: ./docker/php-fpm
       args:
         APP_DEBUG: "${APP_DEBUG}"
     expose:
       - 9000
     volumes:
-      - ./.docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
       - .:/var/www:cached
     networks:
       - backend
@@ -93,12 +93,12 @@ services:
   laravel-horizon:
     container_name: {{APP_NAME}}-dev-queues
     build:
-      context: ./.docker/laravel-horizon
+      context: ./docker/laravel-horizon
       args:
         APP_DEBUG: "${APP_DEBUG}"
     volumes:
       - .:/var/www:cached
-      - ./.docker/laravel-horizon/supervisord.d:/etc/supervisord.d
+      - ./docker/laravel-horizon/supervisord.d:/etc/supervisord.d
     networks:
       - backend
     environment:
@@ -122,7 +122,7 @@ services:
   percona:
     container_name: {{APP_NAME}}-dev-percona
     build:
-      context: ./.docker/percona
+      context: ./docker/percona
       args:
         DB_USERNAME: "${DB_USERNAME}"
         DB_PASSWORD: "${DB_PASSWORD}"
@@ -139,7 +139,7 @@ services:
   redis:
     container_name: {{APP_NAME}}-dev-redis
     build:
-      context: ./.docker/redis
+      context: ./docker/redis
       args:
         REDIS_PASSWORD: "${REDIS_PASSWORD}"
     volumes:

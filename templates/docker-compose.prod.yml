@@ -18,7 +18,7 @@ services:
     container_name: {{APP_NAME}}-production-workspace
     restart: always
     build:
-      context: ./.docker/workspace
+      context: ./docker/workspace
       args:
         APP_DEBUG: "false"
     command: "bash /home/root/docker-entrypoint.sh"
@@ -52,14 +52,14 @@ services:
 
   api:
     container_name: {{APP_NAME}}-production-api
-    build: ./.docker/nginx
+    build: ./docker/nginx
     restart: always
     depends_on:
       - php-fpm
     volumes:
       - .:/var/www:cached
       - ./storage/logs/nginx:/var/log/nginx
-      - ./.docker/nginx/sites/:/etc/nginx/sites-available
+      - ./docker/nginx/sites/:/etc/nginx/sites-available
     networks:
       - web
       - frontend
@@ -76,13 +76,13 @@ services:
     container_name: {{APP_NAME}}-production-php-fpm
     restart: always
     build:
-      context: ./.docker/php-fpm
+      context: ./docker/php-fpm
       args:
         APP_DEBUG: "false"
     expose:
       - 9000
     volumes:
-      - ./.docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
       - .:/var/www:cached
     networks:
       - backend
@@ -108,12 +108,12 @@ services:
     container_name: {{APP_NAME}}-production-queues
     restart: always
     build:
-      context: ./.docker/laravel-horizon
+      context: ./docker/laravel-horizon
       args:
         APP_DEBUG: "false"
     volumes:
       - .:/var/www
-      - ./.docker/laravel-horizon/supervisord.d:/etc/supervisord.d
+      - ./docker/laravel-horizon/supervisord.d:/etc/supervisord.d
     networks:
       - backend
     environment:
@@ -138,7 +138,7 @@ services:
     container_name: {{APP_NAME}}-production-percona
     restart: always
     build:
-      context: ./.docker/percona
+      context: ./docker/percona
       args:
         DB_USERNAME: "${DB_USERNAME}"
         DB_PASSWORD: "${DB_PASSWORD}"
@@ -157,7 +157,7 @@ services:
     container_name: {{APP_NAME}}-production-redis
     restart: always
     build:
-      context: ./.docker/redis
+      context: ./docker/redis
       args:
         REDIS_PASSWORD: "${REDIS_PASSWORD}"
     volumes:
