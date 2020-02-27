@@ -2,9 +2,7 @@ const path = require("path");
 
 module.exports = {
   paths: {
-    build: {
-      path: path.resolve(__dirname, "..", "build"),
-      models: path.resolve(__dirname, "..", "build", "models.json")
-    }
+    static: path.resolve(__dirname, "..", "static"),
+    templates: path.resolve(__dirname, "..", "templates")
   }
 };

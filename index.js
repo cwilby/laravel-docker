@@ -3,8 +3,7 @@ require("dotenv").config();
 const { Command } = require("commander");
 const {
   createLaravelDockerProject,
-  addDockerToLaravelProject,
-  createModelsForLaravelProject
+  addDockerToLaravelProject
 } = require("./lib");
 
 const program = new Command();
@@ -20,10 +19,5 @@ program
   .command("add <destination>")
   .description("Add Docker to a Laravel project")
   .action(addDockerToLaravelProject);
-
-program
-  .command("model <destination>")
-  .description("Create models interactively for a Laravel Project")
-  .action(createModelsForLaravelProject);
 
 program.parse(process.argv);
