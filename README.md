@@ -1,6 +1,11 @@
-# Laravel Jeeves
+# Laravel Docker
 
-A tool to automate new Laravel projects from the CLI.  Create a new Laravel project with minimal Docker config, or extend an existing Laravel project.
+A tool that helps you automate creating new Laravel projects from the CLI.
+
+Features:
+  * Create a new Laravel project with minimal Docker config
+  * Extend an existing Laravel project.
+  * Automate creating models with controllers, factories seeders etc
 
 ## Usage
 
