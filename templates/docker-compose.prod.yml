@@ -3,15 +3,12 @@ version: "3.7"
 networks:
   frontend:
   backend:
-  metabase:
   web:
     external: true
 
 volumes:
-  metabase:
   percona:
   redis:
-  postgres:
 
 services:
   workspace:
@@ -29,28 +26,19 @@ services:
       - frontend
       - backend
     environment:
-      APP_KEY: "${APP_KEY}"
-      APP_ENV: "${APP_ENV}"
-      DB_HOST: "${DB_HOST}"
-      JWT_SECRET: "${JWT_SECRET}"
-      ROOT_PASSWORD: "${PERCONA_ROOT_PASSWORD}"
+      APP_KEY:
+      APP_ENV:
+      DB_HOST:
+      MYSQL_ROOT_PASSWORD:
       PHP_OPCACHE_ENABLE: 1
-      PHP_OPCACHE_REVALIDATE_FREQ: 0
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 0
-      PHP_OPCACHE_MAX_ACCELERATED_FILES: 32351
-      PHP_OPCACHE_MEMORY_CONSUMPTION: 192
-      PHP_OPCACHE_MAX_WASTED_PERCENTAGE: 10
       PHP_XDEBUG_DEFAULT_ENABLE: 0
       PHP_XDEBUG_REMOTE_HOST: ""
       PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
-      PHP_XDEBUG_REMOTE_PORT: 9001
-      PHP_XDEBUG_IDE_KEY: "VSCODE"
       PHP_XDEBUG_REMOTE_AUTOSTART: 0
       PHP_XDEBUG_REMOTE_ENABLE: 0
       PHP_XDEBUG_PROFILER_ENABLE: 0
-      PHP_XDEBUG_PROFILER_OUTPUT_DIR: "~/xdebug/vscode/tmp/profiling"
 
-  api:
+  nginx:
     container_name: {{APP_NAME}}-production-api
     build: ./docker/nginx
     restart: always
@@ -67,7 +55,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=web
-      - traefik.http.routers.{{APP_NAME}}-api.rule=Host(`{{APP_HOST}}`) && (PathPrefix(`/api/v1`) || PathPrefix(`/admin`) || PathPrefix(`/avatars`) || PathPrefix(`/vendor`))
+      - traefik.http.routers.{{APP_NAME}}-api.rule=Host(`{{PRODUCTION_HOST}}`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/avatars`) || PathPrefix(`/vendor`))
       - traefik.http.routers.{{APP_NAME}}-api.tls=true
       - traefik.http.routers.{{APP_NAME}}-api.tls.certresolver=letsencrypt
       - traefik.http.routers.{{APP_NAME}}-api.entrypoints=https
@@ -79,8 +67,6 @@ services:
       context: ./docker/php-fpm
       args:
         APP_DEBUG: "false"
-    expose:
-      - 9000
     volumes:
       - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
       - .:/var/www:cached
@@ -88,21 +74,12 @@ services:
       - backend
     environment:
       PHP_OPCACHE_ENABLE: 1
-      PHP_OPCACHE_REVALIDATE_FREQ: 0
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 0
-      PHP_OPCACHE_MAX_ACCELERATED_FILES: 32351
-      PHP_OPCACHE_MEMORY_CONSUMPTION: 192
-      PHP_OPCACHE_MAX_WASTED_PERCENTAGE: 10
       PHP_XDEBUG_DEFAULT_ENABLE: 0
       PHP_XDEBUG_REMOTE_HOST: ""
       PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
-      PHP_XDEBUG_REMOTE_PORT: 9001
-      PHP_XDEBUG_IDE_KEY: "VSCODE"
       PHP_XDEBUG_REMOTE_AUTOSTART: 0
       PHP_XDEBUG_REMOTE_ENABLE: 0
       PHP_XDEBUG_PROFILER_ENABLE: 0
-      PHP_XDEBUG_PROFILER_OUTPUT_DIR: "~/xdebug/vscode/tmp/profiling"
-      PHP_XDEBUG_PROFILE_ENABLE_TRIGGER: 0
 
   laravel-horizon:
     container_name: {{APP_NAME}}-production-queues
@@ -112,27 +89,18 @@ services:
       args:
         APP_DEBUG: "false"
     volumes:
-      - .:/var/www
+      - .:/var/www:cached
       - ./docker/laravel-horizon/supervisord.d:/etc/supervisord.d
     networks:
       - backend
     environment:
       PHP_OPCACHE_ENABLE: 1
-      PHP_OPCACHE_REVALIDATE_FREQ: 0
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 0
-      PHP_OPCACHE_MAX_ACCELERATED_FILES: 32351
-      PHP_OPCACHE_MEMORY_CONSUMPTION: 192
-      PHP_OPCACHE_MAX_WASTED_PERCENTAGE: 10
       PHP_XDEBUG_DEFAULT_ENABLE: 0
       PHP_XDEBUG_REMOTE_HOST: ""
       PHP_XDEBUG_REMOTE_CONNECT_BACK: 0
-      PHP_XDEBUG_REMOTE_PORT: 9001
-      PHP_XDEBUG_IDE_KEY: "VSCODE"
       PHP_XDEBUG_REMOTE_AUTOSTART: 0
       PHP_XDEBUG_REMOTE_ENABLE: 0
       PHP_XDEBUG_PROFILER_ENABLE: 0
-      PHP_XDEBUG_PROFILER_OUTPUT_DIR: "~/xdebug/vscode/tmp/profiling"
-      PHP_XDEBUG_PROFILE_ENABLE_TRIGGER: 0
 
   percona:
     container_name: {{APP_NAME}}-production-percona
@@ -140,18 +108,17 @@ services:
     build:
       context: ./docker/percona
       args:
-        DB_USERNAME: "${DB_USERNAME}"
-        DB_PASSWORD: "${DB_PASSWORD}"
-        DB_DATABASE: "${DB_DATABASE}"
+        DB_USERNAME:
+        DB_PASSWORD:
+        DB_DATABASE:
     volumes:
       - percona:/var/lib/mysql
     networks:
-      - metabase
       - backend
     ports:
-      - 127.0.0.1:${PERCONA_REMOTE_PORT}:3306
+      - 127.0.0.1:${MYSQL_REMOTE_PORT}:3306
     environment:
-      MYSQL_ROOT_PASSWORD: "${PERCONA_ROOT_PASSWORD}"
+      MYSQL_ROOT_PASSWORD:
 
   redis:
     container_name: {{APP_NAME}}-production-redis
@@ -159,7 +126,7 @@ services:
     build:
       context: ./docker/redis
       args:
-        REDIS_PASSWORD: "${REDIS_PASSWORD}"
+        REDIS_PASSWORD:
     volumes:
       - redis:/data
     networks:

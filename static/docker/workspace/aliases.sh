@@ -69,8 +69,8 @@ alias refresh="php artisan migrate:refresh"
 alias rollback="php artisan migrate:rollback"
 alias seed="php artisan db:seed"
 
-alias sql="mysql -h percona -u root -p${ROOT_PASSWORD}"
-alias sqldump="mysqldump -h percona -u root -p${ROOT_PASSWORD} --all-databases --single-transaction --quick --lock-tables=false > /var/www/database/sql/db-backup-$(date +%F).sql"
+alias sql="mysql -h percona -u root -p${MYSQL_ROOT_PASSWORD}"
+alias sqldump="mysqldump -h percona -u root -p${MYSQL_ROOT_PASSWORD} --all-databases --single-transaction --quick --lock-tables=false > /var/www/database/sql/db-backup-$(date +%F).sql"
 
 function php_debug() {
   case $1 in

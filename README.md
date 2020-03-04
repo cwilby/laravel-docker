@@ -1,25 +1,27 @@
 # Laravel Docker
 
-A tool that helps you automate creating new Laravel projects from the CLI.
-
-Features:
-  * Create a new Laravel project with minimal Docker config
-  * Extend an existing Laravel project.
-  * Automate creating models with controllers, factories seeders etc
+A CLI tool to automate adding Docker to a new or existing Laravel project.
 
 ## Usage
 
-To clone the latest version of Laravel then add Docker configuration:
+### Create a new Laravel project
+
 ```bash
 $ yarn start create my-awesome-project
 ```
+
+### Add Docker to an existing Laravel project
 
 To add Docker configuration to an existing project:
 ```bash
 $ yarn start add ./my-awesome-project
 ```
 
-To enter a list of models and automatically generate Laravel components for each:
-```bash
-$ yarn start model ./my-awesome-project
-```
+## Integrations
+
+### CircleCI
+
+* Create a deploy private/public key: `ssh-keygen -m PEM -t rsa -C "me@gmail.com"`
+* Add public key to `~/.ssh/authorized_keys` on production server.
+* Add private key to CircleCI project under SSH Permissions.
+* Add fingerprint to `.circleci/config.yml` in the `deploy_production` job.
