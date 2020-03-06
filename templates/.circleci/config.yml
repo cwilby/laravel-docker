@@ -44,7 +44,7 @@ jobs:
           command: |
             ssh \
               -t $SSH_PROD_USER@$SSH_PROD_HOST \
-              'bash -i -c "cd {{APP_NAME}}/api && git checkout master && git pull origin master && npm run docker:production"'
+              'bash -i -c "cd {{APP_NAME}}/{{APP_NAME}}-rest-api && git checkout master && git pull origin master && npm run docker:production"'
 
 workflows:
   version: 2

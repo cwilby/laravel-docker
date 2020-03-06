@@ -12,7 +12,6 @@ fi
 pushd /var/www
   if [ "${APP_ENV}" = "production" ]; then
     php artisan optimize:clear || true
-    php artisan clockwork:clean || true
   fi
 
   if [ "${APP_ENV}" = "production" ]; then
